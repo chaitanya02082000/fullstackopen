@@ -4,15 +4,16 @@ const Button = ({ onButtonClick, children }) => {
   return <button onClick={onButtonClick}>{children}</button>;
 };
 
-const Display = ({ text, score }) => {
+const StatisticLine = ({ text, score, percent }) => {
   return (
     <p>
       {text} {score}
+      {percent}
     </p>
   );
 };
 
-const Statistics = ({ good, bad, neutral, buttonClicked }) => {
+const Statistics = ({ good, bad, neutral }) => {
   const totalScore = good + neutral + bad;
   const average =
     totalScore === 0 ? 0 : (good * 1 + neutral * 0 + bad * -1) / totalScore;
@@ -21,16 +22,16 @@ const Statistics = ({ good, bad, neutral, buttonClicked }) => {
   return (
     <div>
       <h2>Statistics</h2>
-      {totalScore === 0 ? ( // Changed from buttonClicked to totalScore
+      {totalScore === 0 ? (
         <p>No Feedback Given</p>
       ) : (
         <>
-          <Display text="Good" score={good} />
-          <Display text="Neutral" score={neutral} />
-          <Display text="Bad" score={bad} />
-          <Display text="Total" score={totalScore} />
-          <Display text="Average" score={average.toFixed(1)} />
-          <Display text="Positive" score={`${positive.toFixed(1)}%`} />
+          <StatisticLine text="Good" score={good} />
+          <StatisticLine text="Neutral" score={neutral} />
+          <StatisticLine text="Bad" score={bad} />
+          <StatisticLine text="Total" score={totalScore} />
+          <StatisticLine text="Average" score={average} />
+          <StatisticLine text="Positive" score={positive} percent="%" />
         </>
       )}
     </div>
