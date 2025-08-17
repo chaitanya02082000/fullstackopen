@@ -6,10 +6,10 @@ const Button = ({ onButtonClick, children }) => {
 
 const StatisticLine = ({ text, score, percent }) => {
   return (
-    <p>
+    <>
       {text} {score}
       {percent}
-    </p>
+    </>
   );
 };
 
@@ -25,14 +25,64 @@ const Statistics = ({ good, bad, neutral }) => {
       {totalScore === 0 ? (
         <p>No Feedback Given</p>
       ) : (
-        <>
-          <StatisticLine text="Good" score={good} />
-          <StatisticLine text="Neutral" score={neutral} />
-          <StatisticLine text="Bad" score={bad} />
-          <StatisticLine text="Total" score={totalScore} />
-          <StatisticLine text="Average" score={average} />
-          <StatisticLine text="Positive" score={positive} percent="%" />
-        </>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <StatisticLine text="good" />
+              </td>
+
+              <td>
+                <StatisticLine score={good} />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <StatisticLine text="neutral" />
+              </td>
+
+              <td>
+                <StatisticLine score={neutral} />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <StatisticLine text="bad" />
+              </td>
+
+              <td>
+                <StatisticLine score={bad} />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <StatisticLine text="all" />
+              </td>
+
+              <td>
+                <StatisticLine score={totalScore} />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <StatisticLine text="average" />
+              </td>
+
+              <td>
+                <StatisticLine score={average} />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <StatisticLine text="positive" />
+              </td>
+
+              <td>
+                <StatisticLine score={positive} percent="%" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
       )}
     </div>
   );
