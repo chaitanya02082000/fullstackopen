@@ -1,10 +1,9 @@
 import { useState } from "react";
 
 const App = () => {
-  const randomQuote = () => {
-    const newRandom = Math.floor(Math.random() * 8);
-    setSelected(newRandom);
-  };
+  const initvotes = new Uint8Array(8);
+  const [votes, setVotes] = useState(initvotes);
+
   const anecdotes = [
     "If it hurts, do it more often.",
     "Adding manpower to a late software project makes it later!",
@@ -18,11 +17,23 @@ const App = () => {
 
   const [selected, setSelected] = useState(0);
 
+  const randomQuote = () => {
+    const newRandom = Math.floor(Math.random() * 8);
+    setSelected(newRandom);
+  };
+
+  const handleVote = () => {
+    const copy = [...votes];
+    copy[selected] += 1;
+    setVotes(copy);
+  };
+
   return (
     <div>
-      {console.log(selected)}
-      {anecdotes[selected]}
-      <br></br>
+      <p>{anecdotes[selected]}</p>
+      <p>Votes: {votes[selected]}</p>
+      <br />
+      <button onClick={handleVote}>vote</button>
       <button onClick={randomQuote}>Random Quote</button>
     </div>
   );
