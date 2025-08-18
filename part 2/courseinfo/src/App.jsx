@@ -17,16 +17,13 @@ const Content = (prop) => {
   );
 };
 const Total = (props) => {
+  const { parts } = props;
+  let intialvalue = 0;
   return (
     <>
       <p>
-        <b> total of</b>
-        <b>
-          {props.parts[0].exercises +
-            props.parts[1].exercises +
-            props.parts[2].exercises +
-            props.parts[3].exercises}
-        </b>
+        <b> total of </b>
+        <b>{parts.reduce((sum, part) => sum + part.exercises, 0)} exercises</b>
       </p>
     </>
   );
