@@ -13,9 +13,21 @@ const App = () => {
         name: newName,
       },
     ];
-    setPersons(persons.concat(newObj));
-    setNewName("");
+
+    const checkDuplicate = (person) =>
+      person.name.toLowerCase() === newName.toLowerCase();
+
+    const duplicate = persons.some(checkDuplicate);
+
+    if (duplicate === false) {
+      setPersons(persons.concat(newObj));
+
+      setNewName("");
+    } else {
+      alert(`${newName} is already in the phonebook`);
+    }
   };
+
   return (
     <div>
       <h2>Phonebook</h2>
