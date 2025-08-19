@@ -1,65 +1,8 @@
 import number from "./services/numbers";
-console.log("number service:", number); // Check what this shows
+import Filter from "./components/Search";
+import AddPeople from "./components/Numberlist";
 const { getData, updateData, createData } = number;
-console.log("getData:", getData); // Check if getData exists
 import { useEffect, useState } from "react";
-const Persons = ({ number, name }) => {
-  return (
-    <>
-      <p>
-        {name} {number}
-      </p>
-    </>
-  );
-};
-const Filter = ({ filter, persons }) => {
-  return (
-    <>
-      {filter ? (
-        <ul>
-          {persons
-            .filter((item) =>
-              item.name.toLowerCase().includes(filter.toLowerCase()),
-            )
-            .map((item, index) => (
-              <li key={index}>
-                <Persons name={item.name} number={item.number} />
-              </li>
-            ))}
-        </ul>
-      ) : (
-        <ul>
-          {persons.map((item, index) => (
-            <li key={index}>
-              <Persons name={item.name} number={item.number} />
-            </li>
-          ))}
-        </ul>
-      )}
-    </>
-  );
-};
-const AddPeople = ({
-  handleAdd,
-  newName,
-  onChangeName,
-  newNumber,
-  onChangeNumber,
-}) => {
-  return (
-    <form onSubmit={handleAdd}>
-      <div>
-        <h2>add a new: </h2>
-        name: <input value={newName} onChange={onChangeName} />
-        <br></br>
-        Numbers: <input value={newNumber} onChange={onChangeNumber} />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  );
-};
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
@@ -104,16 +47,20 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       Filter show with a{" "}
-      <input value={filter} onChange={onChangeFilter}></input>
-      <AddPeople
-        handleAdd={handleAdd}
-        newName={newName}
-        onChangeName={onChangeName}
-        newNumber={newNumber}
-        onChangeNumber={onChangeNumber}
-      />
-      <h2>Numbers</h2>
-      <Filter persons={persons} filter={filter}></Filter>
+      {
+        <>
+          <input value={filter} onChange={onChangeFilter}></input>
+          <AddPeople
+            handleAdd={handleAdd}
+            newName={newName}
+            onChangeName={onChangeName}
+            newNumber={newNumber}
+            onChangeNumber={onChangeNumber}
+          />
+          <h2>Numbers</h2>
+          <Filter persons={persons} filter={filter}></Filter>
+        </>
+      }
     </div>
   );
 };
