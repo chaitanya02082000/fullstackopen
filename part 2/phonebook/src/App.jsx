@@ -1,4 +1,7 @@
-import axios from "axios";
+import number from "./services/numbers";
+console.log("number service:", number); // Check what this shows
+const { getData, updateData, createData } = number;
+console.log("getData:", getData); // Check if getData exists
 import { useEffect, useState } from "react";
 const Persons = ({ number, name }) => {
   return (
@@ -73,32 +76,29 @@ const App = () => {
   };
   const handleAdd = (event) => {
     event.preventDefault();
-    const newObj = [
-      {
-        name: newName,
-        number: newNumber,
-      },
-    ];
+    const newObj = {
+      name: newName,
+      number: newNumber,
+    };
+
     const checkDuplicate = (person) =>
       person.name.toLowerCase() === newName.toLowerCase();
 
     const duplicate = persons.some(checkDuplicate);
 
     if (duplicate === false) {
-      setPersons(persons.concat(newObj));
-      setNewNumber("");
-
-      setNewName("");
+      createData(newObj).then((x) => {
+        setPersons(persons.concat(x));
+        setNewNumber("");
+        setNewName("");
+      });
     } else {
       alert(`${newName} is already in the phonebook`);
     }
   };
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((data) => {
-      setPersons(data.data);
-      console.log(data.data);
-    });
+    getData().then((x) => setPersons(x));
   }, []);
   return (
     <div>
