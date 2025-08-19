@@ -3,8 +3,9 @@ const { deletedata } = numbers;
 
 const DeleteButton = ({ id, persons, setPersons }) => {
   const handledeletedata = () => {
+    const nameDeleted = persons.find((x) => x.id === id);
     const confirmation = confirm(
-      `Do you really want to delete the ${persons[0].name}?`,
+      `Do you really want to delete the ${nameDeleted.name}?`,
       console.log(persons),
     );
     confirmation
