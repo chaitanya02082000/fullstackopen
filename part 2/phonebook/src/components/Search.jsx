@@ -13,7 +13,7 @@ const Filter = ({ filter, persons, setPersons }) => {
               <li key={index}>
                 <Persons name={item.name} number={item.number} />
                 <DeleteButton
-                  id={index}
+                  id={item.id}
                   persons={persons}
                   setPersons={setPersons}
                 />
