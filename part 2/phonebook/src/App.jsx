@@ -58,7 +58,11 @@ const App = () => {
             onChangeNumber={onChangeNumber}
           />
           <h2>Numbers</h2>
-          <Filter persons={persons} filter={filter}></Filter>
+          <Filter
+            setPersons={setPersons}
+            persons={persons}
+            filter={filter}
+          ></Filter>
         </>
       }
     </div>

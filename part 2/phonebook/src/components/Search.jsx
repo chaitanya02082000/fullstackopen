@@ -1,5 +1,6 @@
 import Persons from "./Persons";
-const Filter = ({ filter, persons }) => {
+import DeleteButton from "./Deletebutton";
+const Filter = ({ filter, persons, setPersons }) => {
   return (
     <>
       {filter ? (
@@ -11,6 +12,11 @@ const Filter = ({ filter, persons }) => {
             .map((item, index) => (
               <li key={index}>
                 <Persons name={item.name} number={item.number} />
+                <DeleteButton
+                  id={index}
+                  persons={persons}
+                  setPersons={setPersons}
+                />
               </li>
             ))}
         </ul>
@@ -18,7 +24,12 @@ const Filter = ({ filter, persons }) => {
         <ul>
           {persons.map((item, index) => (
             <li key={index}>
-              <Persons name={item.name} number={item.number} />
+              <Persons name={item.name} number={item.number} />{" "}
+              <DeleteButton
+                id={item.id}
+                persons={persons}
+                setPersons={setPersons}
+              />
             </li>
           ))}
         </ul>
