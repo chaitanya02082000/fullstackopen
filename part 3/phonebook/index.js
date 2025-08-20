@@ -25,8 +25,37 @@ const persons = [
   },
 ];
 
+const getDateTime = () => {
+  const date = new Date();
+  const day = date.toLocaleDateString("en-US", {
+    weekday: "long",
+  });
+
+  const month = date.toLocaleDateString("en-US", {
+    month: "long",
+  });
+
+  const dayOfMonth = date.getDate();
+  const year = date.getFullYear();
+  const timeOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const timeWithTimeZone = date.toLocaleTimeString("en-US", timeOptions);
+
+  return `${day} ${month} ${dayOfMonth} ${year}, ${timeWithTimeZone}`;
+};
+
 app.get("/api/persons", (request, response) => {
   response.json(persons);
+});
+app.get("/info", (Request, Response) => {
+  const dateStuff = getDateTime();
+  const msgSend = `<p>Phonebook has info for ${persons.length} people</p> 
+    <p>${dateStuff}</p>`;
+  Response.send(msgSend);
 });
 app.listen(3001);
 console.log("Server at 3001");
