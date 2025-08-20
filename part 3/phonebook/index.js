@@ -57,5 +57,13 @@ app.get("/info", (Request, Response) => {
     <p>${dateStuff}</p>`;
   Response.send(msgSend);
 });
+
+app.get("/api/persons/:id", (request, response) => {
+  const id = request.params.id;
+  const resoruce = persons.find((x) => x.id === id);
+  resoruce
+    ? response.json(resoruce)
+    : response.status(404).send({ error: "Person not found" });
+});
 app.listen(3001);
 console.log("Server at 3001");
