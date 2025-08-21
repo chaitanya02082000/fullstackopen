@@ -26,13 +26,6 @@ const App = () => {
       name: newName,
       number: newNumber,
     };
-    const getNextId = () => {
-      const maxId = persons.reduce((max, person) => {
-        const idInNumber = parseInt(person.id);
-        return idInNumber > max ? idInNumber : max;
-      }, 0);
-      return maxId + 1;
-    };
     const existingPerson = persons.find(
       (person) => person.name.toLowerCase() === newName.toLowerCase(),
     );

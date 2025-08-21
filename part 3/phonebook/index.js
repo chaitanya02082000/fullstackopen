@@ -1,11 +1,13 @@
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 const app = express();
 
 /*used for parsing the body in json when PUT request*/
 app.use(express.json());
 
 app.use(morgan("tiny"));
+app.use(cors());
 let persons = [
   {
     id: "1",
@@ -27,14 +29,10 @@ let persons = [
     name: "Mary Poppendieck",
     number: "39-23-6423122",
   },
-  {
-    id: "5",
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
 ];
 const newId = () => {
-  const iiid = persons.length > 0 ? Math.max(...persons.map((x) => x.id)) : 0;
+  const iiid =
+    persons.length > 0 ? Math.max(...persons.map((x) => Number(x.id))) : 0;
   return iiid;
 };
 
@@ -103,6 +101,33 @@ app.post("/api/persons", (request, response) => {
     persons = persons.concat(newBody);
     response.json(newBody);
   }
+});
+app.put("/api/persons/:id", (request, response) => {
+  const id = request.params.id;
+  const body = request.body;
+
+  // Check for missing data
+  if (!body.name || !body.number) {
+    return response.status(400).json({ error: "Missing name or number" });
+  }
+
+  // Find the index of the person to update
+  const personIndex = persons.findIndex((p) => p.id === id);
+
+  if (personIndex === -1) {
+    return response.status(404).json({ error: "Person not found" });
+  }
+
+  // Update the person
+  const updatedPerson = {
+    id,
+    name: body.name,
+    number: body.number,
+  };
+
+  persons[personIndex] = updatedPerson;
+
+  response.json(updatedPerson);
 });
 app.listen(3001);
 console.log("Server at 3001");
