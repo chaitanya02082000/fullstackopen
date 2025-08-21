@@ -1,7 +1,8 @@
 const express = require("express");
 
 const app = express();
-
+/*used for parsing the body in json when PUT request*/
+app.use(express.json());
 let persons = [
   {
     id: "1",
@@ -23,7 +24,16 @@ let persons = [
     name: "Mary Poppendieck",
     number: "39-23-6423122",
   },
+  {
+    id: "5",
+    name: "Mary Poppendieck",
+    number: "39-23-6423122",
+  },
 ];
+const newId = () => {
+  const iiid = persons.length > 0 ? Math.max(...persons.map((x) => x.id)) : 0;
+  return iiid;
+};
 
 const getDateTime = () => {
   const date = new Date();
@@ -69,6 +79,22 @@ app.delete("/api/persons/:id", (request, response) => {
   const id = request.params.id;
   persons = persons.filter((x) => x.id !== id);
   response.status(204).end();
+});
+app.post("/api/persons", (request, response) => {
+  const body = request.body;
+  console.log(body);
+  const id = newId();
+  if (!body) {
+    response.status(404).end();
+  } else {
+    const newBody = {
+      id: id + 1,
+      name: body.name,
+      number: body.number,
+    };
+    persons = persons.concat(newBody);
+    response.json(newBody);
+  }
 });
 app.listen(3001);
 console.log("Server at 3001");
