@@ -1,8 +1,11 @@
 const express = require("express");
-
+const morgan = require("morgan");
 const app = express();
+
 /*used for parsing the body in json when PUT request*/
 app.use(express.json());
+
+app.use(morgan("tiny"));
 let persons = [
   {
     id: "1",
@@ -57,7 +60,6 @@ const getDateTime = () => {
 
   return `${day} ${month} ${dayOfMonth} ${year}, ${timeWithTimeZone}`;
 };
-
 app.get("/api/persons", (request, response) => {
   response.json(persons);
 });
