@@ -80,12 +80,18 @@ app.delete("/api/persons/:id", (request, response) => {
   persons = persons.filter((x) => x.id !== id);
   response.status(204).end();
 });
+
 app.post("/api/persons", (request, response) => {
   const body = request.body;
   console.log(body);
+  const existingPerson = persons.find((x) => x.name === body.name);
   const id = newId();
   if (!body) {
     response.status(404).end();
+  } else if (!body.name || !body.number) {
+    response.status(400).json({ message: `Missing name or number` });
+  } else if (existingPerson) {
+    response.status(400).json({ message: `Already exist` });
   } else {
     const newBody = {
       id: id + 1,
