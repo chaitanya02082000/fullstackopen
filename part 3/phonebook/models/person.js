@@ -9,7 +9,7 @@ mongoose
   .then((result) => {
     console.log("Conneceted");
   })
-  .catch((result) => {
+  .catch((error) => {
     console.log(`errror`, error.message);
   });
 
