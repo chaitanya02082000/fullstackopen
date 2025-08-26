@@ -8,6 +8,7 @@ app.use(express.json());
 
 app.use(morgan("tiny"));
 app.use(cors());
+app.use(express.static("dist"));
 let persons = [
   {
     id: "1",
@@ -61,7 +62,7 @@ const getDateTime = () => {
 app.get("/api/persons", (request, response) => {
   response.json(persons);
 });
-app.get("/", (Request, Response) => {
+app.get("/info", (Request, Response) => {
   const dateStuff = getDateTime();
   const msgSend = `<p>Phonebook has info for ${persons.length} people</p> 
     <p>${dateStuff}</p>`;
