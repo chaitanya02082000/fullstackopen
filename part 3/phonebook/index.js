@@ -61,7 +61,7 @@ const getDateTime = () => {
 app.get("/api/persons", (request, response) => {
   response.json(persons);
 });
-app.get("/info", (Request, Response) => {
+app.get("/", (Request, Response) => {
   const dateStuff = getDateTime();
   const msgSend = `<p>Phonebook has info for ${persons.length} people</p> 
     <p>${dateStuff}</p>`;
