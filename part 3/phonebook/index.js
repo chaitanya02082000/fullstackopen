@@ -1,6 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+
+const mongoose = require("mongoose");
+const Person = require("./models/person");
+
 const app = express();
 
 /*used for parsing the body in json when PUT request*/
@@ -60,7 +65,9 @@ const getDateTime = () => {
   return `${day} ${month} ${dayOfMonth} ${year}, ${timeWithTimeZone}`;
 };
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  Person.find({}).then((result) => {
+    response.json(result);
+  });
 });
 app.get("/info", (Request, Response) => {
   const dateStuff = getDateTime();
