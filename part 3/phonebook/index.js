@@ -129,5 +129,6 @@ app.put("/api/persons/:id", (request, response) => {
 
   response.json(updatedPerson);
 });
-app.listen(3001);
-console.log("Server at 3001");
+const port = process.env.PORT || 3001;
+app.listen(port);
+console.log(`server runinngin at ${port}`);
