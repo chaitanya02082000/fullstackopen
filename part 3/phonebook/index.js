@@ -1,9 +1,29 @@
+// app.post("/api/persons", (request, response) => {
+//   const body = request.body;
+//   console.log(body);
+//   const existingPerson = persons.find((x) => x.name === body.name);
+//   const id = newId();
+//   if (!body) {
+//     response.status(404).end();
+//   } else if (!body.name || !body.number) {
+//     response.status(400).json({ message: `Missing name or number` });
+//   } else if (existingPerson) {
+//     response.status(400).json({ message: `Already exist` });
+//   } else {
+//     const newBody = {
+//       id: id + 1,
+//       name: body.name,
+//       number: body.number,
+//     };
+//     persons = persons.concat(newBody);
+//     response.json(newBody);
+//   }
+// });
 require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 
-const mongoose = require("mongoose");
 const Person = require("./models/person");
 
 const app = express();
@@ -14,28 +34,6 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.static("dist"));
-let persons = [
-  {
-    id: "1",
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: "2",
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: "3",
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: "4",
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
 const newId = () => {
   const iiid =
     persons.length > 0 ? Math.max(...persons.map((x) => Number(x.id))) : 0;
@@ -78,37 +76,27 @@ app.get("/info", (Request, Response) => {
 
 app.get("/api/persons/:id", (request, response) => {
   const id = request.params.id;
-  const resoruce = persons.find((x) => x.id === id);
-  resoruce
-    ? response.json(resoruce)
-    : response.status(404).send({ error: "Person not found" });
+  // const resoruce = persons.find((x) => x.id === id);
+  // resoruce
+  //   ? response.json(resoruce)
+  //   : response.status(404).send({ error: "Person not found" });
+  Person.findById(id).then((x) => response.json(x));
 });
 app.delete("/api/persons/:id", (request, response) => {
   const id = request.params.id;
   persons = persons.filter((x) => x.id !== id);
   response.status(204).end();
 });
-
-app.post("/api/persons", (request, response) => {
-  const body = request.body;
-  console.log(body);
-  const existingPerson = persons.find((x) => x.name === body.name);
-  const id = newId();
+app.post("/api/persons/", (req, res) => {
+  const body = req.body;
   if (!body) {
     response.status(404).end();
-  } else if (!body.name || !body.number) {
-    response.status(400).json({ message: `Missing name or number` });
-  } else if (existingPerson) {
-    response.status(400).json({ message: `Already exist` });
-  } else {
-    const newBody = {
-      id: id + 1,
-      name: body.name,
-      number: body.number,
-    };
-    persons = persons.concat(newBody);
-    response.json(newBody);
   }
+  const newBody = new Person({
+    name: body.name,
+    number: body.number,
+  });
+  newBody.save().then((x) => res.json(x));
 });
 app.put("/api/persons/:id", (request, response) => {
   const id = request.params.id;
