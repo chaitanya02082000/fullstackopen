@@ -11,7 +11,7 @@ const createData = (obj) => {
   return axios.post(url, obj).then((response) => response.data);
 };
 const deletedata = (id) => {
-  const Newurl = `${url}/${id}`;
+  const Newurl = `${url}${id}`;
   return axios.delete(Newurl).then((x) => x.data);
 };
 

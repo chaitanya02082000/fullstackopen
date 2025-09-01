@@ -74,20 +74,45 @@ app.get("/info", (Request, Response) => {
   Response.send(msgSend);
 });
 
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
   // const resoruce = persons.find((x) => x.id === id);
   // resoruce
   //   ? response.json(resoruce)
   //   : response.status(404).send({ error: "Person not found" });
-  Person.findById(id).then((x) => response.json(x));
+  Person.findById(id)
+    .then((x) => {
+      if (x) {
+        response.json(x);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
-app.delete("/api/persons/:id", (request, response) => {
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message).send({ error: error.message });
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+app.use(errorHandler);
+app.delete("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
-  persons = persons.filter((x) => x.id !== id);
-  response.status(204).end();
+  Person.findByIdAndDelete(id)
+    .then(() => response.status(204).end())
+    .catch((error) => next(error));
+
+  // persons = persons.filter((x) => x.id !== id);
+  // response.status(204).end();
 });
-app.post("/api/persons/", (req, res) => {
+app.post("/api/persons", (req, res) => {
   const body = req.body;
   if (!body) {
     response.status(404).end();
@@ -98,33 +123,33 @@ app.post("/api/persons/", (req, res) => {
   });
   newBody.save().then((x) => res.json(x));
 });
-app.put("/api/persons/:id", (request, response) => {
-  const id = request.params.id;
-  const body = request.body;
-
-  // Check for missing data
-  if (!body.name || !body.number) {
-    return response.status(400).json({ error: "Missing name or number" });
-  }
-
-  // Find the index of the person to update
-  const personIndex = persons.findIndex((p) => p.id === id);
-
-  if (personIndex === -1) {
-    return response.status(404).json({ error: "Person not found" });
-  }
-
-  // Update the person
-  const updatedPerson = {
-    id,
-    name: body.name,
-    number: body.number,
-  };
-
-  persons[personIndex] = updatedPerson;
-
-  response.json(updatedPerson);
-});
+// app.put("/api/persons/:id", (request, response) => {
+//   const id = request.params.id;
+//   responseconst body = request.body;
+//
+//   // Check for missing data
+//   if (!body.name || !body.number) {
+//     return response.status(400).json({ error: "Missing name or number" });
+//   }
+//
+//   // Find the index of the person to update
+//   const personIndex = persons.findIndex((p) => p.id === id);
+//
+//   if (personIndex === -1) {
+//     return response.status(404).json({ error: "Person not found" });
+//   }
+//
+//   // Update the person
+//   const updatedPerson = {
+//     id,
+//     name: body.name,
+//     number: body.number,
+//   };
+//
+//   persons[personIndex] = updatedPerson;
+//
+//   response.json(updatedPerson);
+// });
 const port = process.env.PORT || 3001;
 app.listen(port);
 console.log(`server runinngin at ${port}`);

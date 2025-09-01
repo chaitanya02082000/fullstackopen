@@ -9,15 +9,15 @@ const DeleteButton = ({ id, persons, setPersons }) => {
       console.log(persons),
     );
     confirmation
-      ? deletedata(id).then((x) =>
-          setPersons(persons.filter((y) => y.id !== x.id)),
+      ? deletedata(id).then(() =>
+          setPersons(persons.filter((y) => y.id !== id)),
         )
       : alert("Cancelled");
   };
 
   return (
     <>
-      <button onClick={handledeletedata}>Delete</button>;
+      <button onClick={handledeletedata}>Delete</button>
     </>
   );
 };
