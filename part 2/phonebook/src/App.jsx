@@ -20,40 +20,55 @@ const App = () => {
   const onChangeNumber = (event) => {
     setNewNumber(event.target.value);
   };
-  const handleAdd = (event) => {
+  const handleAdd = async (event) => {
     event.preventDefault();
     const newObj = {
       name: newName,
       number: newNumber,
     };
+
     const existingPerson = persons.find(
       (person) => person.name.toLowerCase() === newName.toLowerCase(),
     );
 
     if (!existingPerson) {
-      createData(newObj).then((x) => {
-        setPersons(persons.concat(x));
+      try {
+        const addedPerson = await createData(newObj);
+        setPersons((prevPersons) => [...prevPersons, addedPerson]);
         setNewNumber("");
         setNewName("");
-        setMessage("succcesful");
-        setTimeout(() => setMessage(""), 1000);
-      });
+        setMessage("Successfully added!");
+        setTimeout(() => setMessage(""), 3000);
+      } catch (error) {
+        setMessage(
+          `Error: ${error.response?.data?.error || "Failed to add contact"}`,
+        );
+        setTimeout(() => setMessage(""), 3000);
+      }
     } else {
-      const change = confirm(
-        `${newName} is already in the phonebook, Do you want to change the number`,
+      const change = window.confirm(
+        `${newName} is already in the phonebook. Do you want to update the number?`,
       );
-      if (change === true) {
-        const id = existingPerson.id;
-        updateData(id, newObj).then((x) => {
-          setPersons(
-            persons.map((person) =>
-              person.id === existingPerson.id ? x : person,
+
+      if (change) {
+        try {
+          const updatedPerson = await updateData(existingPerson.id, newObj);
+          setPersons((prevPersons) =>
+            prevPersons.map((person) =>
+              person.id === existingPerson.id ? updatedPerson : person,
             ),
           );
           setNewNumber("");
           setNewName("");
-          setMessage("succcesful");
-        });
+          setMessage("Successfully updated!");
+          setTimeout(() => setMessage(""), 3000);
+        } catch (error) {
+          console.error("Update failed:", error);
+          setMessage(
+            `Error: ${error.response?.data?.error || "Failed to update contact"}`,
+          );
+          setTimeout(() => setMessage(""), 3000);
+        }
       }
     }
   };

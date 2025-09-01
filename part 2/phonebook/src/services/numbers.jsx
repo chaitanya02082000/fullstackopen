@@ -1,18 +1,28 @@
 import axios from "axios";
-const url = "/api/persons/";
+const baseUrl = "/api/persons"; // Don't include trailing slash
+
 const getData = () => {
-  return axios.get(url).then((x) => x.data);
+  return axios.get(baseUrl).then((response) => response.data);
 };
+
 const updateData = (id, obj) => {
-  return axios.put(`${url}/${id}`, obj).then((x) => x.data);
+  // Fix the URL construction to avoid double slashes
+  return axios
+    .put(`${baseUrl}/${id}`, obj)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Update failed:", error);
+      throw error;
+    });
 };
 
 const createData = (obj) => {
-  return axios.post(url, obj).then((response) => response.data);
+  return axios.post(baseUrl, obj).then((response) => response.data);
 };
+
 const deletedata = (id) => {
-  const Newurl = `${url}${id}`;
-  return axios.delete(Newurl).then((x) => x.data);
+  // Fix the URL construction here too
+  return axios.delete(`${baseUrl}/${id}`).then((response) => response.data);
 };
 
 export default { getData, updateData, createData, deletedata };

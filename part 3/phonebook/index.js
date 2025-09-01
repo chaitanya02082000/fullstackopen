@@ -102,7 +102,6 @@ const errorHandler = (error, request, response, next) => {
 
   next(error);
 };
-app.use(errorHandler);
 app.delete("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
   Person.findByIdAndDelete(id)
@@ -112,6 +111,7 @@ app.delete("/api/persons/:id", (request, response, next) => {
   // persons = persons.filter((x) => x.id !== id);
   // response.status(204).end();
 });
+
 app.post("/api/persons", (req, res) => {
   const body = req.body;
   if (!body) {
@@ -123,33 +123,42 @@ app.post("/api/persons", (req, res) => {
   });
   newBody.save().then((x) => res.json(x));
 });
-// app.put("/api/persons/:id", (request, response) => {
-//   const id = request.params.id;
-//   responseconst body = request.body;
-//
-//   // Check for missing data
-//   if (!body.name || !body.number) {
-//     return response.status(400).json({ error: "Missing name or number" });
-//   }
-//
-//   // Find the index of the person to update
-//   const personIndex = persons.findIndex((p) => p.id === id);
-//
-//   if (personIndex === -1) {
-//     return response.status(404).json({ error: "Person not found" });
-//   }
-//
-//   // Update the person
-//   const updatedPerson = {
-//     id,
-//     name: body.name,
-//     number: body.number,
-//   };
-//
-//   persons[personIndex] = updatedPerson;
-//
-//   response.json(updatedPerson);
-// });
+
+app.use(errorHandler);
+
+app.put("/api/persons/:id", (request, response, next) => {
+  const { id } = request.params;
+  const { name, number } = request.body;
+
+  // Check for missing data
+  if (!name || !number) {
+    return response.status(400).json({
+      error: "Missing name or number",
+    });
+  }
+
+  // Create the updated person object
+  const updatedPerson = {
+    name,
+    number,
+  };
+
+  // Use MongoDB's findByIdAndUpdate with the 'new: true' option
+  Person.findByIdAndUpdate(
+    id,
+    updatedPerson,
+    { new: true, runValidators: true, context: "query" }, // Add these options
+  )
+    .then((updated) => {
+      if (!updated) {
+        return response.status(404).json({
+          error: "Person not found",
+        });
+      }
+      response.json(updated);
+    })
+    .catch((error) => next(error));
+});
 const port = process.env.PORT || 3001;
 app.listen(port);
 console.log(`server runinngin at ${port}`);
