@@ -100,14 +100,28 @@ app.get("/api/persons/:id", (request, response, next) => {
     });
 });
 
+// Error handling middleware
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message).send({ error: error.message });
+  // Log the error
+  console.error("Error:", error.message);
 
+  // Handle different types of errors
   if (error.name === "CastError") {
-    return response.status(400).send({ error: "malformatted id" });
+    return response.status(400).json({
+      error: "malformatted id",
+    });
   }
 
-  next(error);
+  if (error.name === "ValidationError") {
+    return response.status(400).json({
+      error: error.message,
+    });
+  }
+
+  // Default error
+  return response.status(500).json({
+    error: "Internal server error",
+  });
 };
 app.delete("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
@@ -119,19 +133,17 @@ app.delete("/api/persons/:id", (request, response, next) => {
   // response.status(204).end();
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   const body = req.body;
-  if (!body) {
-    response.status(404).end();
-  }
   const newBody = new Person({
     name: body.name,
     number: body.number,
   });
-  newBody.save().then((x) => res.json(x));
+  newBody
+    .save()
+    .then((x) => res.json(x))
+    .catch((error) => next(error));
 });
-
-app.use(errorHandler);
 
 app.put("/api/persons/:id", (request, response, next) => {
   const { id } = request.params;
@@ -163,6 +175,8 @@ app.put("/api/persons/:id", (request, response, next) => {
     })
     .catch((error) => next(error));
 });
+
+app.use(errorHandler);
 const port = process.env.PORT || 3001;
 app.listen(port);
 console.log(`server runinngin at ${port}`);

@@ -40,9 +40,7 @@ const App = () => {
         setMessage("Successfully added!");
         setTimeout(() => setMessage(""), 3000);
       } catch (error) {
-        setMessage(
-          `Error: ${error.response?.data?.error || "Failed to add contact"}`,
-        );
+        setMessage(`Error: ${error.response?.data?.error} "}`);
         setTimeout(() => setMessage(""), 3000);
       }
     } else {

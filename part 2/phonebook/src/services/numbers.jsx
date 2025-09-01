@@ -16,8 +16,18 @@ const updateData = (id, obj) => {
     });
 };
 
-const createData = (obj) => {
-  return axios.post(baseUrl, obj).then((response) => response.data);
+const createData = async (obj) => {
+  try {
+    const response = await axios.post(baseUrl, obj);
+    return response.data;
+  } catch (error) {
+    console.error("Create person error:", {
+      status: error.response?.status,
+      data: error.response?.data,
+      error: error.message,
+    });
+    throw error; // Re-throw to be caught in the component
+  }
 };
 
 const deletedata = (id) => {
