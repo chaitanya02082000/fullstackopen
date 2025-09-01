@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = "/api/persons"; // Don't include trailing slash
+const baseUrl = "/api/persons";
 
 const getData = () => {
   return axios.get(baseUrl).then((response) => response.data);

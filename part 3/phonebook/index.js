@@ -68,10 +68,17 @@ app.get("/api/persons", (request, response) => {
   });
 });
 app.get("/info", (Request, Response) => {
-  const dateStuff = getDateTime();
-  const msgSend = `<p>Phonebook has info for ${persons.length} people</p> 
-    <p>${dateStuff}</p>`;
-  Response.send(msgSend);
+  Person.countDocuments({}).then((count) => {
+    const dateStuff = getDateTime();
+    const msgSend = `
+        <div style="font-family: Arial, sans-serif;">
+          <h2>Phonebook Info</h2>
+          <p>Phonebook has info for ${count} people</p>
+          <p>Current Date and Time (UTC): ${dateStuff}</p>
+        </div>
+      `;
+    Response.send(msgSend);
+  });
 });
 
 app.get("/api/persons/:id", (request, response, next) => {
@@ -130,20 +137,17 @@ app.put("/api/persons/:id", (request, response, next) => {
   const { id } = request.params;
   const { name, number } = request.body;
 
-  // Check for missing data
   if (!name || !number) {
     return response.status(400).json({
       error: "Missing name or number",
     });
   }
 
-  // Create the updated person object
   const updatedPerson = {
     name,
     number,
   };
 
-  // Use MongoDB's findByIdAndUpdate with the 'new: true' option
   Person.findByIdAndUpdate(
     id,
     updatedPerson,
